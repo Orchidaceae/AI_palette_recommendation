@@ -10,10 +10,10 @@ current_palette = []
 def new_palette():
     palette = []
     # randomly generate 3 colors
-    for i in range (0,3):
+    for _ in range (0,3):
         hexcode = ""
         # generate 2 digits at a time
-        for j in range (0,3):
+        for _ in range (0,3):
             r_n = random.randint(0,255)
             if r_n <= 15:
                 byte_str = "0f"
@@ -72,8 +72,6 @@ def get_users():
             user_list.append(row[0])
     user_f.close()
     return user_list
-
-
 
 # collect input from textbox
 def submit(input):
