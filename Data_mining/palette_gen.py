@@ -52,20 +52,32 @@ def show_palette(fig, colors):
 def submit(input):
     global fig1
     global current_palette
+    global text_box #TODO: empty value in textbox
 
-    # TODO: check input and store value in csv
+    # check input
+    try:
+        input = int(input)
+    except:
+        print("invalid input")
+    else:
+        if 1 <= input <= 3:
+            print("input:", input)
+            # TODO: save values to csv
+            
 
-    # call random function to generate new palette
-    palette = new_palette()
+            # call random function to generate new palette
+            palette = new_palette()
 
-    # update plot with new palette colors
-    show_palette(fig1, palette)
-    # set global var 
-    current_palette = palette
-    print("current palette:")
-    print(current_palette)
-    # update plot
-    plt.draw()
+            # update plot with new palette colors
+            show_palette(fig1, palette)
+            # set global var 
+            current_palette = palette
+            print("current palette:")
+            print(current_palette)
+            # update plot
+            plt.draw()
+        else:
+            print("pick a number between 1 and 3")
 
 # create plot figure
 fig1 = plt.figure()
@@ -82,7 +94,7 @@ fig1.canvas.draw()
 # create new axes object
 axbox = plt.axes([0.125, 0.05, 0.777, 0.075])
 # add text box to axbox
-text_box = TextBox(axbox, "Rate 1 to 5", initial="1")
+text_box = TextBox(axbox, "Rate 1 to 3", initial="2")
 # call function submit after user press enter i textbox
 text_box.on_submit(submit)
 # open plot in window
