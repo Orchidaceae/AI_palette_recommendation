@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 import random
+import csv
 
 # global variable
 current_palette = []
@@ -48,6 +49,21 @@ def show_palette(fig, colors):
     # update the plot
     fig1.canvas.draw() 
 
+# add data to csv file
+def update_csv(rate, palette):
+    myData = [str(rate), palette[0], palette[1], palette[2]]
+
+    # open file in append mode
+    myFile = open('lovisa.csv', 'a')
+    writer = csv.writer(myFile)
+    writer.writerow(myData)
+    myFile.flush()
+    myFile.close()
+           
+    print("Written \n")
+
+
+
 # collect input from textbox
 def submit(input):
     global fig1
@@ -63,7 +79,7 @@ def submit(input):
         if 1 <= input <= 3:
             print("input:", input)
             # TODO: save values to csv
-            
+            update_csv(input, current_palette)
 
             # call random function to generate new palette
             palette = new_palette()
@@ -78,6 +94,11 @@ def submit(input):
             plt.draw()
         else:
             print("pick a number between 1 and 3")
+
+
+#TODO: set up user-profiles
+#var = raw_input("Please enter something: ")
+
 
 # create plot figure
 fig1 = plt.figure()
