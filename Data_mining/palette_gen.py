@@ -51,16 +51,27 @@ def show_palette(fig, colors):
 
 # add data to csv file
 def update_csv(rate, palette):
+    global csv_file
     myData = [str(rate), palette[0], palette[1], palette[2]]
 
     # open file in append mode
-    myFile = open('lovisa.csv', 'a')
+    myFile = open(csv_file, 'a')
     writer = csv.writer(myFile)
     writer.writerow(myData)
     myFile.flush()
     myFile.close()
            
     print("Written \n")
+
+# get users as a list
+def get_users():
+    user_list = []
+    with open("users.csv", "rt") as user_f:
+        reader = csv.reader(user_f, delimiter=";")
+        for row in reader:
+            user_list.append(row[0])
+    user_f.close()
+    return user_list
 
 
 
@@ -97,8 +108,16 @@ def submit(input):
 
 
 #TODO: set up user-profiles
-#var = raw_input("Please enter something: ")
+user_list = get_users()
+print("Current user profiles:", user_list)
+user_id = input("Please enter user_id: ")
 
+# choose among exsisting user profiles
+while (user_id in user_list) != True:
+    user_id = input("Please enter user_id: ")
+
+# set file to write collected data to
+csv_file = str(user_id) + ".csv"
 
 # create plot figure
 fig1 = plt.figure()
