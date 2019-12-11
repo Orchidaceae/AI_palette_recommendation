@@ -19,12 +19,15 @@ def import_csvdata(filename):
         c2 = []
         c3 = []
         for row in reader:
-            ip = palette_2_int_list(row) #returns a rated palette as an list of integers
-            # list each element separetly 
-            r.append(ip[0])
-            c1.append(ip[1])
-            c2.append(ip[2])
-            c3.append(ip[3])
+            if not row:
+                continue
+            else:
+                ip = palette_2_int_list(row) #returns a rated palette as an list of integers
+                # list each element separetly 
+                r.append(ip[0])
+                c1.append(ip[1])
+                c2.append(ip[2])
+                c3.append(ip[3])
     # make a 2d numpy array with one attribute per row
     return np.array([r,c1,c2,c3])
 
