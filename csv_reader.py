@@ -6,7 +6,6 @@ def palette_2_int_list(list):
     c1 = list[1]
     c2 = list[2]
     c3 = list[3]
-    #print([int(list[0]), int(c1[1:], 16), int(c2[1:], 16), int(c3[1:], 16)])
     # remove the first char '#' from the color strings and convert them to integers
     return [int(list[0]), int(c1[1:], 16), int(c2[1:], 16), int(c3[1:], 16)]
 
@@ -29,6 +28,7 @@ def import_csvdata(filename):
     # make a 2d numpy array with one attribute per row
     return np.array([r,c1,c2,c3])
 
+
 #TODO: save return array to a file
 """>>> from tempfile import TemporaryFile
 >>> outfile = TemporaryFile()
@@ -41,13 +41,23 @@ def import_csvdata(filename):
 array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])"""
     
 
-
 # How to use import_csvdata()
-data = import_csvdata("lovisa")
-print(np.shape(data))
-# data2 = np.transpose(data)
-# print(data)
-# print(data2)
-# #s = slice()#start:stop:step
+# data = import_csvdata("test")
+# print(np.shape(data))
 # print("Palette ratings - Row 0: ",data[0])
+# print("Palette c1 - Row 1: ",data[1])
 # print("One palette - Column 0: ",data[:,0])
+# # data2 = np.transpose(data)
+# # print(data)
+# # print(data2)
+# # #s = slice()#start:stop:step
+
+"""
+Data format of the numpy array:
+
+rating  1       1      3     4
+c1      num    num    num   num
+c2      num    num    num   num
+c3      num    num    num   num
+
+"""
