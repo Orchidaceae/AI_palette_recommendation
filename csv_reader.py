@@ -43,10 +43,11 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])"""
 
 
 # How to use import_csvdata()
-data = import_csvdata("test")
-data2 = np.transpose(data)
-print(data)
-print(data2)
-#s = slice()#start:stop:step
-print("Palette ratings - Row 0: ",data[0])
-print("One palette - Column 0: ",data[:,0])
+data = import_csvdata("lovisa")
+print(np.shape(data))
+# data2 = np.transpose(data)
+# print(data)
+# print(data2)
+# #s = slice()#start:stop:step
+# print("Palette ratings - Row 0: ",data[0])
+# print("One palette - Column 0: ",data[:,0])
