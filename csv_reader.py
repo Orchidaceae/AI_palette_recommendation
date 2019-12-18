@@ -29,7 +29,8 @@ def import_csvdata(filename):
                 c2.append(ip[2])
                 c3.append(ip[3])
     # make a 2d numpy array with one attribute per row
-    return np.array([r,c1,c2,c3])
+    array = np.array([r,c1,c2,c3])
+    return np.transpose(array)
 
 
 #TODO: save return array to a file
@@ -46,21 +47,22 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])"""
 
 # How to use import_csvdata()
 # data = import_csvdata("test")
+# print(data)
 # print(np.shape(data))
-# print("Palette ratings - Row 0: ",data[0])
-# print("Palette c1 - Row 1: ",data[1])
-# print("One palette - Column 0: ",data[:,0])
+# print("Palette ratings - Column 0: ",data[:,0])
+# print("Palette c1 - Column 1: ",data[:,1])
+# print("One palette - Row 0: ",data[0])
 # # data2 = np.transpose(data)
-# # print(data)
-# # print(data2)
+# print(data)
+# print(data2)
 # # #s = slice()#start:stop:step
 
 """
 Data format of the numpy array:
-
-rating  1       1      3     4
-c1      num    num    num   num
-c2      num    num    num   num
-c3      num    num    num   num
-
+    labels          samples
+[[       1 11792581  2155287  2678288]
+ [       1 12556180  1040714 11960544]
+ [       2  6573489  5103277 11527642]
+ [       1  9397964 15844496 14848293]
+ [       1  1047846  7942961 11585421]]
 """
