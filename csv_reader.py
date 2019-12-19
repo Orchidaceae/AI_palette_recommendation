@@ -1,8 +1,23 @@
 import csv
 import numpy as np
 
-# takes a palett and returns a list of integers
-def palette_2_int_list(list):
+# Normalize input for the NN by converting the hex color codes into 3 RGB triplets.
+# Expand the NN input layer to 9 inputs.
+# Each of the new 9 network inputs receives one color channel from each of the RGB triplets.
+
+def hex_to_rgb(hex):
+    return [int(hex[i:i+2], 16) / 255.0 for i in (1, 3, 5)]
+
+# takes a palette and returns a list of rgb components as normalized floats
+def rgb_palette_from(list):
+    c1 = hex_to_rgb(list[1])
+    c2 = hex_to_rgb(list[2])
+    c3 = hex_to_rgb(list[3])
+    label = int(list[0]) - 1  # -1 from labels -> range [0 1 2]
+    return [label] + c1 + c2 + c3
+
+# takes a palette and returns a list of integers
+def palette_to_int_list(list):
     c1 = list[1]
     c2 = list[2]
     c3 = list[3]
@@ -14,23 +29,16 @@ def import_csvdata(filename):
     path = "Data_mining/" + filename + ".csv"
     with open(path, "rt") as f:
         reader = csv.reader(f, delimiter=",")
-        r = []
-        c1 = []
-        c2 = []
-        c3 = []
+        array = []
         for row in reader:
             if not row:
                 continue
             else:
-                ip = palette_2_int_list(row) #returns a rated palette as an list of integers
-                # list each element separetly 
-                r.append(ip[0])
-                c1.append(ip[1])
-                c2.append(ip[2])
-                c3.append(ip[3])
-    # make a 2d numpy array with one attribute per row
-    array = np.array([r,c1,c2,c3])
-    return np.transpose(array)
+                #ip = palette_to_int_list(row) #returns a rated palette as an list of integers
+                ip = rgb_palette_from(row) # return a 10 element vector with ratings and normalized rgb values of palette
+                array.append(ip)
+    # return a 2d numpy array with one 10 element vector per row
+    return np.array(array)
 
 
 #TODO: save return array to a file
@@ -47,22 +55,19 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])"""
 
 # How to use import_csvdata()
 # data = import_csvdata("test")
-# print(data)
 # print(np.shape(data))
-# print("Palette ratings - Column 0: ",data[:,0])
-# print("Palette c1 - Column 1: ",data[:,1])
-# print("One palette - Row 0: ",data[0])
-# # data2 = np.transpose(data)
 # print(data)
-# print(data2)
-# # #s = slice()#start:stop:step
+# print("Palette ratings - Column 0: ",data[:,0])
+# print("Palette c1 (rgb) - Column 1 to 3: ",data[:,1:4])
+# print("One palette - Row 0: ",data[0])
+# print("Samples only: ",np.delete(data, 0, axis=1))
 
 """
 Data format of the numpy array:
-    labels          samples
-[[       1 11792581  2155287  2678288]
- [       1 12556180  1040714 11960544]
- [       2  6573489  5103277 11527642]
- [       1  9397964 15844496 14848293]
- [       1  1047846  7942961 11585421]]
+labels:     samples:       
+[[0.         0.70196078 0.94117647 0.77254902 0.1254902  0.89019608 0.09019608 0.15686275 0.87058824 0.0627451 ]
+ [0.         0.74901961 0.59215686 0.58039216 0.05882353 0.88235294 0.29019608 0.71372549 0.50196078 0.87843137]
+ [1.         0.39215686 0.30196078 0.69411765 0.30196078 0.87058824 0.67843137 0.68627451 0.89803922 0.85490196]
+ [0.         0.56078431 0.4        0.8        0.94509804 0.76862745 0.56470588 0.88627451 0.56862745 0.14509804]
+ [2.         0.05882353 0.99215686 0.14901961 0.4745098  0.2        0.19215686 0.69019608 0.78039216 0.55294118]]
 """
