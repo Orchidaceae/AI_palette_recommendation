@@ -5,6 +5,7 @@ import csv
 
 # global variable
 current_palette = []
+palette_session_counter = 0
 
 # generate a list of 3 6-digit color hexcodes
 def new_palette():
@@ -78,6 +79,7 @@ def submit(input):
     global fig1
     global current_palette
     global text_box #TODO: empty value in textbox
+    global palette_session_counter
 
     # check input
     try:
@@ -96,7 +98,9 @@ def submit(input):
             # update plot with new palette colors
             show_palette(fig1, palette)
             # set global var 
+            palette_session_counter = palette_session_counter + 1
             current_palette = palette
+            print("session: ", palette_session_counter)
             print("current palette:")
             print(current_palette)
             # update plot
