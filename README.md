@@ -35,7 +35,20 @@ decide good values for number of layers and their size
 
 Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
 
+# Reinforcement learning model
+The NN is used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the NN, is presented to the user. 
+
+The users answers are saved and used for further training of the network.
+
+# Sources
+Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9781617294433  
 
 
 
+# Dependencies
 
+# Building
+
+# Running
+
+# Test data strucute / training data
