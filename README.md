@@ -46,9 +46,9 @@ Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9
 
 
 # Dependencies
-matplotlib
-keras
-numpy
+- matplotlib
+- keras
+- numpy
 
 # Building
 
