@@ -59,18 +59,20 @@ def createNewSeqModel():
     weights = 'random_uniform'
 
     # input layer = 1, first layer 50
-    model.add(Layers.Dense(45, input_shape=(9,),
+    model.add(layers.Dense(45, input_shape=(9,),
                            activation='relu', kernel_initializer=weights))
+    model.add(layers.Dropout(0.5))
     # second layer 50
-    model.add(Layers.Dense(45, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(45, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dropout(0.5))
     # output layer 1, the number of classifications
-    model.add(Layers.Dense(3, activation='softmax',
+    model.add(layers.Dense(3, activation='softmax',
                            kernel_initializer=weights))
 
     # model training specification: adam -> "Stochastic Gradiant Decent (SGD) on steriods"
     # loss function: Mean Square Error (MSE), the network does not optimize accuracy 
     # instead it tries to minimaze the loss of accuracy with a loss function
-    model.compile(Optimizers.adam(), loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizers.adam(), loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
