@@ -1,8 +1,9 @@
 from csv_reader import import_csvdata #used to read data from csv files as numpy arrays
-import keras.layers as Layers
-import keras.optimizers as Optimizers
+import keras.layers as layers
+import keras.optimizers as optimizers
 from keras import Sequential
 from keras.utils.np_utils import to_categorical
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 import csv
@@ -21,6 +22,21 @@ def report(val_loss, val_accu, comment, file):
            
     print("Written \n")
 
+def plot_training_history(history):
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    epochs = range(1, len(loss) + 1)
+
+    plt.plot(epochs, loss, 'bo', label='Training loss')
+    plt.plot(epochs, val_loss, 'b', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.show()
+
 """ generate a prediction from a data sample using the model"""
 def predictWithModel(model, samples):
     return model.predict(samples) #predict() always takes a list of values
@@ -28,9 +44,11 @@ def predictWithModel(model, samples):
 """ train model with samples and labels for a number if epochs
     - epochs: defines how many iterations of training that we wish to do.
     - batchSize: defines how many samples we should batch into one calculation of the gradient."""
-def trainModel(model, samples, labels, epochs, batchSize):
-    model.fit(samples, labels,
-              epochs=epochs, batch_size=batchSize)
+def trainModel(model, samples, labels, epochs, batch_size, x_val, y_val):
+    history = model.fit(samples, labels,
+              epochs=epochs, batch_size=batch_size, validation_data=(x_val, y_val))
+    plot_training_history(history)
+    
 
 
 """generate sequential model object"""
@@ -82,12 +100,12 @@ test_samples = samples[training_index::] # slice tensor after index
 Net = createNewSeqModel()
 
 # Fit the model to our training data
-trainModel(Net, training_samples, training_labels, 25, 100) #(model, samples, labels, epochs, batchsize)
+trainModel(Net, training_samples, training_labels, 150, 32, test_samples, test_labels)  #(model, samples, labels, epochs, batchsize, x_val, y_val):
 
-# Test model on evaluation data
-Predictions = predictWithModel(Net, test_samples)
-print ( "Predictions: \n " , Predictions)
-print ( "Labels: \n " , test_labels)
+# # Test model on evaluation data
+# Predictions = predictWithModel(Net, test_samples)
+# print ( "Predictions: \n " , Predictions)
+# print ( "Labels: \n " , test_labels)
 
 # calculate validation loss and validation accuracy
 val_loss, val_acc = Net.evaluate(test_samples, test_labels)
