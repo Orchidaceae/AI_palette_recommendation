@@ -3,10 +3,12 @@ import keras.layers as layers
 import keras.optimizers as optimizers
 from keras import Sequential
 from keras.utils.np_utils import to_categorical
+from keras.models import load_model
 import matplotlib.pyplot as plt
 import numpy as np
 import math
 import csv
+import threading
 
 # add data to csv file
 def report(val_loss, val_accu, comment, file):
@@ -49,6 +51,8 @@ def plot_training_history(history):
     ax2.legend(['Train', 'Test'], loc='upper right')
 
     plt.subplots_adjust(hspace = 0.6) # Add space between subplots
+
+    plt.ion() # show figure with out blocking program flow
     plt.show()
 
 """ generate a prediction from a data sample using the model"""
@@ -138,3 +142,16 @@ plot_training_history(history)
 val_loss, val_acc = Net.evaluate(validation_samples, validation_labels)
 print ( "Validation loss: \n " , val_loss)
 print ( "Validation accuracy: \n " , val_acc)
+
+# saving options for generated model
+answer = input("Do you want to save the model y/n: ")
+input_list = ["y","n"]
+while (answer in input_list) != True:
+    answer = input("Do you want to save the model y/n: ")
+
+if(answer == "y"):
+    name = input("Name model: ")
+    name = 'Models/' + name + ".h5"
+    Net.save(name)
+
+#loaded_model = load_model('Models/myModel.h5')
