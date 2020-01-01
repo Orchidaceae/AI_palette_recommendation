@@ -35,6 +35,10 @@ decide good values for number of layers and their size
 
 Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
 
+![figure 1](Models/plots/net72acc.png)
+Statistics from training and testing 
+
+![figure 2](Models/plots/net76acc.png) 
 # Reinforcement learning model
 The NN is used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the NN, is presented to the user. 
 
