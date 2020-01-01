@@ -61,10 +61,9 @@ def predictWithModel(model, samples):
 def trainModel(model, samples, labels, epochs, batch_size, x_val, y_val):
     history = model.fit(samples, labels,
               epochs=epochs, batch_size=batch_size, validation_data=(x_val, y_val))
-    plot_training_history(history)
+    #plot_training_history(history)
+    return history
     
-
-
 """generate sequential model object"""
 def createNewSeqModel():
     model = Sequential()
@@ -113,9 +112,6 @@ test_index = (math.floor((size - training_index)/2)) + training_index
 test_labels = labels[training_index:test_index] # elements between indecies, excluding value at end index
 validation_labels = labels[test_index:] # every element after index, including start index
 
-# plt.plot(training_labels)
-# plt.show()
-
 # collect samples
 samples = np.delete(data, 0, axis=1)
 
@@ -127,15 +123,18 @@ validation_samples = samples[test_index::] # slice tensor after index
 # create new network
 Net = createNewSeqModel()
 
-# Fit the model to our training data
-trainModel(Net, training_samples, training_labels, 150, 32, test_samples, test_labels)  #(model, samples, labels, epochs, batchsize, x_val, y_val):
+# Fit the model to our training data and validate with test data
+history = trainModel(Net, training_samples, training_labels, 150, 32, test_samples, test_labels)  #(model, samples, labels, epochs, batchsize, x_val, y_val):
+
+# show plot with training and testing statistics
+plot_training_history(history)
 
 # # Test model on evaluation data
 # Predictions = predictWithModel(Net, test_samples)
 # print ( "Predictions: \n " , Predictions)
 # print ( "Labels: \n " , test_labels)
 
-# calculate validation loss and validation accuracy
+# calculate validation loss and validation accuracy on validation data
 val_loss, val_acc = Net.evaluate(validation_samples, validation_labels)
 print ( "Validation loss: \n " , val_loss)
 print ( "Validation accuracy: \n " , val_acc)
