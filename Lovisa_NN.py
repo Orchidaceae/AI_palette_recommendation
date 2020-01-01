@@ -26,15 +26,29 @@ def plot_training_history(history):
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
+    # calculate number of epochs from history data
     epochs = range(1, len(loss) + 1)
 
-    plt.plot(epochs, loss, 'bo', label='Training loss')
-    plt.plot(epochs, val_loss, 'b', label='Validation loss')
-    plt.title('Training and validation loss')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
+    # create figure and add subplots
+    fig = plt.figure()
+    ax = fig.add_subplot(2,1,1)
+    ax2 = fig.add_subplot(2,1,2)
 
+    # plot training vs validation loss
+    ax.plot(epochs, loss, 'bo', label='Training loss')
+    ax.plot(epochs, val_loss, 'b', label='Validation loss')
+    ax.title.set_text('Training and validation loss')
+    ax.set(xlabel='Epochs', ylabel='Loss')
+    ax.legend(['Train', 'Test'], loc='upper right')
+
+    # plot training vs validation accuracy
+    ax2.plot(history.history['accuracy'])
+    ax2.plot(history.history['val_accuracy'])
+    ax2.title.set_text('Model accuracy')
+    ax2.set(xlabel='Epochs', ylabel='Accuracy')
+    ax2.legend(['Train', 'Test'], loc='upper right')
+
+    plt.subplots_adjust(hspace = 0.6) # Add space between subplots
     plt.show()
 
 """ generate a prediction from a data sample using the model"""
