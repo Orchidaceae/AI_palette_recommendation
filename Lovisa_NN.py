@@ -87,14 +87,26 @@ size = labels.size
 # categorical encoding
 labels = to_categorical(labels) # hot 1 encoding
 
+# Split data into training, testing and validation
+# Data: |             ~80% training             |  ~10% test   |  ~10% validation   |
 training_index = math.floor((size/10)*8) # ~80 percent of data
 training_labels = labels[:training_index] # every element up to index
-test_labels = labels[training_index:] # every element after index
+
+test_index = (math.floor((size - training_index)/2)) + training_index
+
+test_labels = labels[training_index:test_index] # elements between indecies, excluding value at end index
+validation_labels = labels[test_index:] # every element after index, including start index
+
+# plt.plot(training_labels)
+# plt.show()
 
 # collect samples
 samples = np.delete(data, 0, axis=1)
+
+# Split data into training, testing and validation
 training_samples = samples[:training_index:] # slice tensor up to row of index
-test_samples = samples[training_index::] # slice tensor after index
+test_samples = samples[training_index:test_index:] # slice tensor between indecies
+validation_samples = samples[test_index::] # slice tensor after index
 
 # create new network
 Net = createNewSeqModel()
@@ -108,6 +120,6 @@ trainModel(Net, training_samples, training_labels, 150, 32, test_samples, test_l
 # print ( "Labels: \n " , test_labels)
 
 # calculate validation loss and validation accuracy
-val_loss, val_acc = Net.evaluate(test_samples, test_labels)
+val_loss, val_acc = Net.evaluate(validation_samples, validation_labels)
 print ( "Validation loss: \n " , val_loss)
 print ( "Validation accuracy: \n " , val_acc)
