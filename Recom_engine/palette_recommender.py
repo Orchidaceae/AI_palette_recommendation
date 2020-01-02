@@ -8,6 +8,7 @@ import numpy as np
 # global variable
 current_palette = []
 palette_session_counter = 0
+session_rateing_sum = 0
 
 def hex_to_rgb(hex):
     return [int(hex[i:i+2], 16) / 255.0 for i in (1, 3, 5)]
@@ -66,6 +67,7 @@ def new_palette():
 def get_recommendation():
     max_iterations = 10
     t = 0
+    # try a limited number of times to find a palette with rating 3
     while t < max_iterations:
         # generate 10 random palettes
         palettes = []
@@ -136,12 +138,59 @@ def get_users():
     user_f.close()
     return user_list
 
+# get avrage rating from training data and previous recommendation data
+def collect_statistics():
+    global csv_file
+    recom_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Recom_engine/' + csv_file
+    training_data_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Data_mining/' + csv_file
+    with open(recom_path, "rt") as f:
+        reader = csv.reader(f, delimiter=",")
+        sum = 0
+        n = 0
+        for row in reader:
+            if not row:
+                continue
+            else:
+                rate = int(row[0])
+                sum = sum + rate
+                n = n + 1
+    recom_avrage_rating = sum/n
+    with open(training_data_path, "rt") as f:
+        reader = csv.reader(f, delimiter=",")
+        sum = 0
+        n = 0
+        for row in reader:
+            if not row:
+                continue
+            else:
+                rate = int(row[0])
+                sum = sum + rate
+                n = n + 1
+    training_avrage_rating = sum/n
+    return (recom_avrage_rating, training_avrage_rating)
+
+def display_statistics():
+    global recom_avrage_prev
+    global train_avarage
+    global session_rateing_sum
+    global palette_session_counter
+
+    session_avrage = session_rateing_sum/palette_session_counter
+    print("session: ", palette_session_counter)
+    print("session avrage rating: ", session_avrage)
+    print("Avrage rating from previous sessions: ", recom_avrage_prev)
+    print("Avrage rating from random training: ", train_avarage)
+    print("\n")
+    print("current palette:")
+    print(current_palette)
+
 # collect input from textbox
 def submit(input):
     global fig1
     global current_palette
     global text_box
     global palette_session_counter
+    global session_rateing_sum
 
     # check input
     try:
@@ -159,12 +208,14 @@ def submit(input):
 
             # update plot with new palette colors
             show_palette(fig1, palette)
-            # set global var 
+            # set global var
+            session_rateing_sum = session_rateing_sum + input
             palette_session_counter = palette_session_counter + 1
             current_palette = palette
-            print("session: ", palette_session_counter)
-            print("current palette:")
-            print(current_palette)
+
+            # display statistics
+            display_statistics()
+
             # update plot
             plt.draw()
         else:
@@ -183,6 +234,10 @@ while (user_id in user_list) != True:
 # set file to write collected data to
 csv_file = str(user_id) + ".csv"
 
+tmp = collect_statistics()
+recom_avrage_prev = tmp[0]
+train_avarage = tmp[1]
+
 #TODO: load user defined model to use for predictions
 myModel = load_model('../Models/net72acc.h5')
 
@@ -197,6 +252,7 @@ print(current_palette)
 
 # redraw figure
 fig1.canvas.draw()
+
 
 # create new axes object
 axbox = plt.axes([0.125, 0.05, 0.777, 0.075])
