@@ -75,7 +75,7 @@ def get_recommendation():
             palettes.append(new_palette())
         # predict their ratings
         ratings = predict_ratings(palettes) #get a list of integer ratings [1 2 3]
-        print(ratings)
+        print("Recommendation ratings: ", ratings)
         # return a palette with high rating (2 or 3)
         for i in range (0,10):
             if ratings[i] == 3:
@@ -118,7 +118,7 @@ def show_palette(fig, colors):
 def update_csv(rate, palette):
     global csv_file
     myData = [str(rate), palette[0], palette[1], palette[2]]
-    path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Recom_engine/' + csv_file
+    path = './data/' + csv_file
     # open file in append mode
     myFile = open(path, 'a')
     writer = csv.writer(myFile)
@@ -131,7 +131,8 @@ def update_csv(rate, palette):
 # get users as a list
 def get_users():
     user_list = []
-    with open("users.csv", "rt") as user_f:
+    path = "./data/users.csv"
+    with open(path, "rt") as user_f:
         reader = csv.reader(user_f, delimiter=";")
         for row in reader:
             user_list.append(row[0])
@@ -141,8 +142,8 @@ def get_users():
 # get avrage rating from training data and previous recommendation data
 def collect_statistics():
     global csv_file
-    recom_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Recom_engine/' + csv_file
-    training_data_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Data_mining/' + csv_file
+    recom_path = './data/' + csv_file
+    training_data_path = '../Data_mining/' + csv_file
     with open(recom_path, "rt") as f:
         reader = csv.reader(f, delimiter=",")
         sum = 0
@@ -154,19 +155,28 @@ def collect_statistics():
                 rate = int(row[0])
                 sum = sum + rate
                 n = n + 1
-    recom_avrage_rating = sum/n
-    with open(training_data_path, "rt") as f:
-        reader = csv.reader(f, delimiter=",")
-        sum = 0
-        n = 0
-        for row in reader:
-            if not row:
-                continue
-            else:
-                rate = int(row[0])
-                sum = sum + rate
-                n = n + 1
-    training_avrage_rating = sum/n
+    if n != 0:
+        recom_avrage_rating = sum/n
+    else:
+        print("no previous sessions found")
+        recom_avrage_rating = 0
+    
+    try:
+        with open(training_data_path, "rt") as f:
+            reader = csv.reader(f, delimiter=",")
+            sum = 0
+            n = 0
+            for row in reader:
+                if not row:
+                    continue
+                else:
+                    rate = int(row[0])
+                    sum = sum + rate
+                    n = n + 1
+        training_avrage_rating = sum/n
+    except IOError:
+        print("Training data not found")
+        training_avrage_rating = 0          
     return (recom_avrage_rating, training_avrage_rating)
 
 def display_statistics():
