@@ -57,5 +57,16 @@ Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9
 # Building
 
 # Running
+### palette_gen.py
+User rates randomly generated palettes in order to collect data to train network models. No palette recommendations are used here.
+
+### NN_test.py
+Generate new network with user data.
+
+### palette_recommender.py
+Lets user choose a network and rate recommendations given by the network. Avrages of current user session rating as well as previous session ratings of the same user are given to compare them to the avrage rating on random training data (if it exsists for the specific user). No reinforcement with the user feedback is used in this version to further train the network.
+
+### reinforcement_palette_recommender.py
+Start with a blank netwrok or a model of choice and iteratively train model by giving it feedback on presented recommendations.
 
 # Test data strucute / training data
