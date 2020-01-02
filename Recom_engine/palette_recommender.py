@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 from keras.models import load_model
+from os import listdir
+from os.path import isfile, join
 import random
 import csv
 import numpy as np
@@ -75,7 +77,7 @@ def get_recommendation():
             palettes.append(new_palette())
         # predict their ratings
         ratings = predict_ratings(palettes) #get a list of integer ratings [1 2 3]
-        print(ratings)
+        print("Recommendation ratings: ", ratings)
         # return a palette with high rating (2 or 3)
         for i in range (0,10):
             if ratings[i] == 3:
@@ -118,7 +120,7 @@ def show_palette(fig, colors):
 def update_csv(rate, palette):
     global csv_file
     myData = [str(rate), palette[0], palette[1], palette[2]]
-    path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Recom_engine/' + csv_file
+    path = './data/' + csv_file
     # open file in append mode
     myFile = open(path, 'a')
     writer = csv.writer(myFile)
@@ -131,7 +133,8 @@ def update_csv(rate, palette):
 # get users as a list
 def get_users():
     user_list = []
-    with open("users.csv", "rt") as user_f:
+    path = "./data/users.csv"
+    with open(path, "rt") as user_f:
         reader = csv.reader(user_f, delimiter=";")
         for row in reader:
             user_list.append(row[0])
@@ -141,8 +144,8 @@ def get_users():
 # get avrage rating from training data and previous recommendation data
 def collect_statistics():
     global csv_file
-    recom_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Recom_engine/' + csv_file
-    training_data_path = '/Users/lovisa/Desktop/Ht19/AI_ID1214/Project/AI_palette_recommendation/Data_mining/' + csv_file
+    recom_path = './data/' + csv_file
+    training_data_path = '../Data_mining/' + csv_file
     with open(recom_path, "rt") as f:
         reader = csv.reader(f, delimiter=",")
         sum = 0
@@ -154,19 +157,29 @@ def collect_statistics():
                 rate = int(row[0])
                 sum = sum + rate
                 n = n + 1
-    recom_avrage_rating = sum/n
-    with open(training_data_path, "rt") as f:
-        reader = csv.reader(f, delimiter=",")
-        sum = 0
-        n = 0
-        for row in reader:
-            if not row:
-                continue
-            else:
-                rate = int(row[0])
-                sum = sum + rate
-                n = n + 1
-    training_avrage_rating = sum/n
+    if n != 0:
+        recom_avrage_rating = sum/n
+    else:
+        print("no previous sessions found")
+        recom_avrage_rating = 0
+    
+    training_avrage_rating = 0    
+    try:
+        with open(training_data_path, "rt") as f:
+            reader = csv.reader(f, delimiter=",")
+            sum = 0
+            n = 0
+            for row in reader:
+                if not row:
+                    continue
+                else:
+                    rate = int(row[0])
+                    sum = sum + rate
+                    n = n + 1
+        if n != 0:
+            training_avrage_rating = sum/n
+    except IOError:
+        print("Training data not found")      
     return (recom_avrage_rating, training_avrage_rating)
 
 def display_statistics():
@@ -203,8 +216,8 @@ def submit(input):
             # save values to csv
             update_csv(input, current_palette)
 
-            # call random function to generate new palette
-            palette = new_palette()
+            # get new recommendation palette
+            palette = get_recommendation()
 
             # update plot with new palette colors
             show_palette(fig1, palette)
@@ -220,7 +233,6 @@ def submit(input):
             plt.draw()
         else:
             print("pick a number between 1 and 3")
-
 
 # set up user-profiles
 user_list = get_users()
@@ -238,8 +250,22 @@ tmp = collect_statistics()
 recom_avrage_prev = tmp[0]
 train_avarage = tmp[1]
 
+def get_models(path):
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    return files
+
 #TODO: load user defined model to use for predictions
-myModel = load_model('../Models/net72acc.h5')
+model_list = get_models("../Models")
+
+print("Current models: ", model_list)
+model_id = input("Please enter model name: ")
+
+# choose among exsisting models
+while (model_id in model_list) != True:
+    model_id = input("Please enter model name: ")
+
+# set model for recommendations
+myModel = load_model('../Models/' + model_id)
 
 # create plot figure
 fig1 = plt.figure()
@@ -252,7 +278,6 @@ print(current_palette)
 
 # redraw figure
 fig1.canvas.draw()
-
 
 # create new axes object
 axbox = plt.axes([0.125, 0.05, 0.777, 0.075])
