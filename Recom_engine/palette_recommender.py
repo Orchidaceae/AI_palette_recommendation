@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 from keras.models import load_model
+from os import listdir
+from os.path import isfile, join
 import random
 import csv
 import numpy as np
@@ -161,6 +163,7 @@ def collect_statistics():
         print("no previous sessions found")
         recom_avrage_rating = 0
     
+    training_avrage_rating = 0    
     try:
         with open(training_data_path, "rt") as f:
             reader = csv.reader(f, delimiter=",")
@@ -173,10 +176,10 @@ def collect_statistics():
                     rate = int(row[0])
                     sum = sum + rate
                     n = n + 1
-        training_avrage_rating = sum/n
+        if n != 0:
+            training_avrage_rating = sum/n
     except IOError:
-        print("Training data not found")
-        training_avrage_rating = 0          
+        print("Training data not found")      
     return (recom_avrage_rating, training_avrage_rating)
 
 def display_statistics():
@@ -231,7 +234,6 @@ def submit(input):
         else:
             print("pick a number between 1 and 3")
 
-
 # set up user-profiles
 user_list = get_users()
 print("Current user profiles:", user_list)
@@ -248,8 +250,22 @@ tmp = collect_statistics()
 recom_avrage_prev = tmp[0]
 train_avarage = tmp[1]
 
+def get_models(path):
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    return files
+
 #TODO: load user defined model to use for predictions
-myModel = load_model('../Models/net72acc.h5')
+model_list = get_models("../Models")
+
+print("Current models: ", model_list)
+model_id = input("Please enter model name: ")
+
+# choose among exsisting models
+while (model_id in model_list) != True:
+    model_id = input("Please enter model name: ")
+
+# set model for recommendations
+myModel = load_model('../Models/' + model_id)
 
 # create plot figure
 fig1 = plt.figure()
@@ -262,7 +278,6 @@ print(current_palette)
 
 # redraw figure
 fig1.canvas.draw()
-
 
 # create new axes object
 axbox = plt.axes([0.125, 0.05, 0.777, 0.075])
