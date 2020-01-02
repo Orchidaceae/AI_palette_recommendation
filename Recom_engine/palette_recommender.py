@@ -213,8 +213,8 @@ def submit(input):
             # save values to csv
             update_csv(input, current_palette)
 
-            # call random function to generate new palette
-            palette = new_palette()
+            # get new recommendation palette
+            palette = get_recommendation()
 
             # update plot with new palette colors
             show_palette(fig1, palette)
