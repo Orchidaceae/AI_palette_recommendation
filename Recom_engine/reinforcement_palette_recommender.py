@@ -13,6 +13,9 @@ import math
 current_palette = []
 palette_session_counter = 0
 session_rateing_sum = 0
+moving_avg_sum = 0
+average_session_rating = []
+session_vector = []
 
 def hex_to_rgb(hex):
     return [int(hex[i:i+2], 16) / 255.0 for i in (1, 3, 5)]
@@ -103,7 +106,7 @@ def show_palette(fig, colors):
         if not ax_list: # if list is empty, generate axes objects
             subplot_pos = 130 + i #calculate position index of subplot
             i = i + 1
-            fig1.add_subplot(subplot_pos, facecolor=c, aspect='equal') # create an axes object as subplot
+            fig.add_subplot(subplot_pos, facecolor=c, aspect='equal') # create an axes object as subplot
             frame1 = plt.gca() #get current matplotlib axes object
             #hide x and y axis in subplot
             frame1.axes.get_xaxis().set_visible(False)
@@ -116,7 +119,7 @@ def show_palette(fig, colors):
                 ax = ax_list[i]
                 ax.set_facecolor(colors[i]) 
     # update the plot
-    fig1.canvas.draw() 
+    fig.canvas.draw() 
 
 # add data to csv file
 def update_csv(rate, palette):
@@ -143,7 +146,7 @@ def get_users():
     user_f.close()
     return user_list
 
-# get avrage rating from training data and previous recommendation data
+# get average rating from training data and previous recommendation data
 def collect_statistics():
     global csv_file
     recom_path = './data/' + csv_file
@@ -160,12 +163,12 @@ def collect_statistics():
                 sum = sum + rate
                 n = n + 1
     if n != 0:
-        recom_avrage_rating = sum/n
+        recom_average_rating = sum/n
     else:
         print("no previous sessions found")
-        recom_avrage_rating = 0
+        recom_average_rating = 0
     
-    training_avrage_rating = 0    
+    training_average_rating = 0    
     try:
         with open(training_data_path, "rt") as f:
             reader = csv.reader(f, delimiter=",")
@@ -179,27 +182,27 @@ def collect_statistics():
                     sum = sum + rate
                     n = n + 1
         if n != 0:
-            training_avrage_rating = sum/n
+            training_average_rating = sum/n
     except IOError:
         print("Training data not found")      
-    return (recom_avrage_rating, training_avrage_rating)
+    return (recom_average_rating, training_average_rating)
 
 def display_statistics():
-    global recom_avrage_prev
+    global recom_average_prev
     global train_avarage
     global session_rateing_sum
     global palette_session_counter
 
-    session_avrage = session_rateing_sum/palette_session_counter
-    print("session: ", palette_session_counter)
-    print("session avrage rating: ", session_avrage)
-    print("Avrage rating from previous sessions: ", recom_avrage_prev)
-    print("Avrage rating from random training: ", train_avarage)
+    session_average = session_rateing_sum/palette_session_counter
+    print("Session: ", palette_session_counter)
+    print("Session average rating: ", session_average)
+    print("Average rating from previous sessions: ", recom_average_prev)
+    print("Average rating from random training: ", train_avarage)
     print("\n")
     print("current palette:")
     print(current_palette)
 
-
+# train model using the n latest data rows
 def train_model(n):
     global myModel
     # collect data from the latest inputs
@@ -219,7 +222,6 @@ def train_model(n):
 
     a = []
     # preprocess data
-
     for v in array:
         # build a 10 element vector with ratings and normalized rgb values of palette
         c1 = hex_to_rgb(v[1])
@@ -281,11 +283,13 @@ def train_model(n):
 
 # collect input from textbox
 def submit(input):
-    global fig1
     global current_palette
     global text_box
     global palette_session_counter
     global session_rateing_sum
+    global moving_avg_sum
+    global average_session_rating
+    global session_vector
 
     # check input
     try:
@@ -302,19 +306,35 @@ def submit(input):
             palette = get_recommendation()
 
             # update plot with new palette colors
-            show_palette(fig1, palette)
+            fig = plt.figure("Palette")
+            show_palette(fig, palette)
+
             # set global var
             session_rateing_sum = session_rateing_sum + input
+            moving_avg_sum = moving_avg_sum + input
             palette_session_counter = palette_session_counter + 1
             current_palette = palette
 
-            # display statistics
             display_statistics()
 
-            #TODO: Train model on session data
             n = 10
             if ((palette_session_counter % n) == 0): # train model every n:th input
                 train_model(n)
+                average_session_rating.append(moving_avg_sum / 10)
+                session_vector.append(palette_session_counter)
+                moving_avg_sum = 0
+
+                #TODO: plot training curve with avg session data
+                fig = plt.figure("Stats")
+                ax = fig.add_subplot(1, 1, 1)
+                ax.grid(True)
+                ax.set_xlabel('Palette index')
+                ax.set_ylabel('Avg. rating')
+                ax.set_ylim([1.0, 3.0])
+                ax.set_title("Avg. rating over 10 recent palettes")
+                ax.plot(session_vector, average_session_rating, '-bo')
+                expected_value_random = 1.98 # E(Uniform([1, 2, 3]))
+                ax.plot([0, palette_session_counter], [expected_value_random, expected_value_random], '--r')
 
             # update plot
             plt.draw()
@@ -334,7 +354,7 @@ while (user_id in user_list) != True:
 csv_file = str(user_id) + ".csv"
 
 tmp = collect_statistics()
-recom_avrage_prev = tmp[0]
+recom_average_prev = tmp[0]
 train_avarage = tmp[1]
 
 def get_models(path):
@@ -353,17 +373,19 @@ while (model_id in model_list) != True:
 # set model for recommendations
 myModel = load_model('../Models/' + model_id)
 
-# create plot figure
-fig1 = plt.figure()
+# create plot figure windows
+fig = plt.figure("Stats")
+fig.canvas.draw()
+fig = plt.figure("Palette")
 
 # generate first palette and show
 current_palette = get_recommendation()
-show_palette(fig1, current_palette)
+show_palette(fig, current_palette)
 print("current palette:")
 print(current_palette)
 
 # redraw figure
-fig1.canvas.draw()
+fig.canvas.draw()
 
 # create new axes object
 axbox = plt.axes([0.125, 0.05, 0.777, 0.075])
