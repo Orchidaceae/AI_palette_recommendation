@@ -47,7 +47,9 @@ In this network the input data is split to train and test set using train_test_s
 Categorical cross-entropy is used as loss function for the model as cross-entropy function calculate a score which is the difference between the actucal and predicted probability distributions for all classes and tries to minimize this score to zero as close as possible [3]. I decided to use stochastic gradient descent with a learning rate of 0.01 as the optimizer function [3].
 
 [1] https://medium.com/@contactsunny/how-to-split-your-dataset-to-train-and-test-datasets-using-scikit-learn-e7cf6eb5e0d 
+
 [2] https://learning.oreilly.com/library/view/deep-learning-with/9781617294433/OEBPS/Text/03.xhtml
+
 [3] https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
 
 ## Validation and testing
