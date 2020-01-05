@@ -1,4 +1,5 @@
 # AI-driven Palette Recommendation
+
 Recommendation system for 3 color palettes
 
 Uses supervised learning in order to predict user rating of palettes, classifying palettes into 3 score classes: 1 2 3 where 1=dislike, 2=neither dislike nor like, 3=like.
@@ -8,7 +9,10 @@ Multi-Class Classification, one sample belongs to just one of many classes.
 # Work process
 
 ## Data collection
-Since the recommendation engine is supposed to personalize palette recommendations for specific users, data has to be collected and stored for better predictions. We came up with a system that shows the user a randomly generated 3 color palette and asks the user to rate it from 1 to 3 in order to collect preferens data. The 3 byte hexadecimal color codes and the rating number are then written to a csv-file for the later training of the neural network. 
+Since the recommendation engine is supposed to personalize palette recommendations for specific users, data has to be collected and stored for better predictions. We came up with a system that shows the user a randomly generated 3 color palette and asks the user to rate it from 1 to 3 in order to collect preferens data. The 3 byte hexadecimal color codes and the rating number are then written to a csv-file for the later training of the neural network.
+
+![figure 1](Models/plots/palette_window.png)
+<sub>User interface showing a palette. Input bar for rating at the bottom of the window.<sub>
 
 ## Data preprocessing
 
@@ -43,28 +47,31 @@ For the training of the network the loss function categorical cross entropy was 
 
 ### maryam_ANN
 [How did you design and train your model. Describe the process]
-## Validation and testing
+## Testing and validation
 
 The goal at this stage was to get the prediction accuracy of our network models above the random baseline of simply guessing the class of a sample correctly which in our case is 33 percent. 
 
 ### Lovisa_NN
-try some optimizations of the network using the statistics from the validation data 
 
-find a good balance with optimizing the model to the training data with a good ability to generalize, avoid overfitting with regularization techniques such as adding drop-out to layers, 50% dropout was used in two layers
+To properly opotimize the network without introducing to much bias towards the perticular data at hand the data were shuffled and dividet into 3 sets, one each for training, test and validation. Around 80 percent for training and 10 percent each for testing and validation. With this done network parameters such as training batch-size, epochs were altered to see how this affected the accuracy. The network performed genarally well with the initial settings with an accuracy of about 50 percent.
 
-decide good values for number of layers and their size 
+The batch size did not notably afffect the performance since this network is rather small in size. But what could be seen in the inital training was that the network overfitted rather quickly, that means that the model learned the distinct relations in the data too fast to learn the more subtle relations that would help it to generalize better. To avoid this I introduced dropout between the hidden layers in the model. This means that some percentage of the connection between of these layers are randomly reseted, introducing some random noise into the learing process. This regularization technique reduces the overfitting potetial of the network [5]. After some testing the dropout were set to 50 percent. Down below are the graphs of two generated networks with the lovisa.csv data. From the loss graphs we can se that the first achieves a better training loss than test, this is expected since test is new unseen data for the model. But sometimes some networks such as the other below achieves a better loss for the test data than the training just by chance and this does not necessarily mean that they are better at generalizing without further testing.
 
-Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
+[5] Deep Learning with Python
 
-![figure 1](Models/plots/net72acc.png)
-Statistics from training and testing 
+![figure 2](Models/plots/net72acc.png)
+<sub>Statistics of a network with 72% validation accuracy. Comparing training and test loss and accuracy over the number of epochs. <sub> 
 
-![figure 2](Models/plots/net76acc.png) 
+![figure 3](Models/plots/net76acc.png) 
+<sub>Statistics of a network with 76% validation accuracy. Comparing training and test loss and accuracy over the number of epochs.<sub>
 
 ### maryam_ANN
 [How did you test and validate the models performence, describe the process.]
 
 # Reinforcement learning model
+
+Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
+
 The NN is used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the NN, is presented to the user. 
 
 The users answers are saved and used for further training of the network.
@@ -73,7 +80,8 @@ Below is an image of a graph visualizing ...
 The red line represents the expected value of a uniform distrubtion of the values 1, 2 and 3. Anything above this line indicates that the recommendations are better than the statistical average and vice versa if below.
 
 ![](Models/plots/bm_reinforcement_training.png)
-Test performed on user bm, training model L_zero.h5
+<sub>Test performed on user bm, training model L_zero.h5<sub>
+
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
 
