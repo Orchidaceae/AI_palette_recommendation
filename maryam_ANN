@@ -1,6 +1,7 @@
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import Normalizer
 from keras.utils import to_categorical
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 from matplotlib import pyplot
 from csv_reader import import_csvdata #used to read data from csv files as numpy arrays
 import numpy as np
@@ -12,34 +13,19 @@ import math
 
 #import the csv file
 data = import_csvdata("maryam")
-#data2 = import_csvdata("test")
 
 # shuffle the data values
 np.random.shuffle(data)
 
 # label data
-train_y = data[:,0]# collect label array
-size = train_y.size
+y = data[:,0]# collect label array
+x = np.delete(data, 0, axis=1)
 
 # categorical encoding
-labels = to_categorical(train_y) # hot 1 encoding
+y = to_categorical(y) # hot 1 encoding
 
-# Split data into training, testing and validation
-# Data: |             ~80% training             |  ~10% test   |  ~10% validation   |
-training_x = math.floor((size/10)*8) # ~80 percent of data
-training_y = labels[:training_x] # every element up to index
-
-test_x = (math.floor((size - training_x)/2)) + training_x
-
-test_y = labels[training_x:test_x] # elements between indecies, excluding value at end index
-validation_labels = labels[test_x:] # every element after index, including start index
-# collect samples
-samples = np.delete(data, 0, axis=1)
-
-# Split data into training, testing and validation
-training_samples = samples[:training_x:] # slice tensor up to row of index
-test_samples = samples[training_x:test_x:] # slice tensor between indecies
-validation_samples = samples[test_x::] # slice tensor after index
+# Split data into training, testing
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
 # create the model
 model = Sequential()
@@ -47,51 +33,36 @@ model = Sequential()
 weights = 'random_uniform'
 # add layers to the model
 model.add(Dense(50, activation='relu', input_shape=(9,), kernel_initializer=weights))
+model.add(Dropout(0.1))
 model.add(Dense(50, activation='relu', kernel_initializer=weights))
+#model.add(Dropout(0.1))
 model.add(Dense(3, activation='softmax', kernel_initializer=weights))
 
 # compile the model
 opt = SGD(lr=0.01, momentum=0.9)
 model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 # Fit the model to our training data and validate with test data
-
+#print(training_x)
+#print(training_y)
 # train model
-history = model.fit(training_x, training_y, epochs=50, batch_size=32, validation_data=(test_x, test_y))
-
+history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=175, batch_size=32)
+# evaluate the model
+_, train_acc = model.evaluate(x_train, y_train, verbose=0)
+_, test_acc = model.evaluate(x_test, y_test, verbose=0)
+print('Train: %.3f, Test: %.3f' % (train_acc, test_acc))
 # plot loss during training
-
-loss = pyplot.plot(history.history['loss'], label='train')
-val_loss = pyplot.plot(history.history['val_loss'], label='test')
-# calculate number of epochs from history data
-epochs = range(1, len(loss) + 1)
-# create figure and add subplots
-fig = pyplot.figure()
-ax = fig.add_subplot(2,1,1)
-ax2 = fig.add_subplot(2,1,2)
-
-# plot training vs validation loss
-ax.plot(epochs, loss, 'bo', label='Training loss')
-ax.plot(epochs, val_loss, 'b', label='Validation loss')
-ax.title.set_text('Training and validation loss')
-ax.set(xlabel='Epochs', ylabel='Loss')
-ax.legend(['Train', 'Test'], loc='upper right')
-
-# plot training vs validation accuracy
-ax2.plot(history.history['accuracy'])
-ax2.plot(history.history['val_accuracy'])
-ax2.title.set_text('Model accuracy')
-ax2.set(xlabel='Epochs', ylabel='Accuracy')
-ax2.legend(['Train', 'Test'], loc='upper right')
-
-pyplot.subplots_adjust(hspace = 0.6) # Add space between subplots
-
-pyplot.ion() # show figure with out blocking program flow
+pyplot.subplot(211)
+pyplot.title('Loss')
+pyplot.plot(history.history['loss'], label='train')
+pyplot.plot(history.history['val_loss'], label='test')
+pyplot.legend()
+# plot accuracy during training
+pyplot.subplot(212)
+pyplot.title('Accuracy')
+pyplot.plot(history.history['accuracy'], label='train')
+pyplot.plot(history.history['val_accuracy'], label='test')
+pyplot.legend()
 pyplot.show()
-
-# calculate validation loss and validation accuracy on validation data
-val_loss, val_acc = model.evaluate(validation_samples, validation_labels)
-print ( "Validation loss: \n " , val_loss)
-print ( "Validation accuracy: \n " , val_acc)
 
 # saving options for generated model
 answer = input("Do you want to save the model y/n: ")
