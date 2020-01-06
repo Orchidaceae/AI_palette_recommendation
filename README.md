@@ -4,7 +4,7 @@ Recommendation system for 3 color palettes written in python. It uses supervised
 # Problem Description
 The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes to choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
 
-## Recommendation Systmes and Classification
+## Recommendation Systems and Classification
 Recommendation systems are one machine learning technique that make prediction based on user’s historical behaviors. The most popular approaches to build such system are Content-based and Collaborative Filtering.
 Content-Based Filtering requires that there is a good amount of information on item’s own features which is based on the user’s previous ratings on data. Collaborative filtering on the other hand uses techniques that can filter out items that a user might like based on the user reaction by similar users.
 
@@ -108,6 +108,8 @@ Below is an image of a graph visualizing the reinforced training process of an u
 ![](Models/plots/bm_reinforcement_training.png)
 <sub>Test of reinforced_palette_recommender.py performed on user bm, training model L_zero.h5. Here the average of every 10 palette ratings are plotted to see if the average increases with the training of the network that happens every 10 rated palette. The red line indicates the expected value of the rating system.<sub>
 
+[TODO: maryam text]
+
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
 
@@ -177,19 +179,23 @@ Description of saved models that can be ustilized in palette_recommender.py or r
     - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 72%.
 - net76acc.h5
     - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 76%.
+[TODO: add more models]
 
 ## palette_recommender.py
 Lets user choose a network and rate recommendations given by the network. Avrages of current user session rating as well as previous session ratings of the same user are given to compare them to the avrage rating on random training data (if it exsists for the specific user). No reinforcement with the user feedback is used in this version to further train the network.
 
 Example of a test run:
-
+[TODO: add example]
 
 ## reinforcement_palette_recommender.py
 Start with a untrained network or a model of choice and iteratively train model by giving it feedback on presented recommendations.
 
 Example of a test run:
+[TODO: add example]
 
 # References
 1. Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9781617294433  
 2. [TODO]
 3. [TODO]
+
+[TODO: make sure that test files are empty]
