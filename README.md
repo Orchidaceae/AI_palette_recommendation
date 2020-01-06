@@ -71,7 +71,7 @@ The batch size did not notably affect the performance since this network is rath
 ### maryam_ANN
 [How did you test and validate the models performence, describe the process.]
 
-# Palette recommendation engine
+# Palette Recommendation Engine
 
 With a working palette rating predicting network we built a recommendation engine that could generate new palettes with high ratings. To generate recommendations you need to explore the palette space in some way. It is also good if this exploration does not get stuck on repeat in a select space of for example just one user color preferens. Preferably a random element should be included in the exploration to keep finding new interesting palettes. Therefore we used the network as just a filter on a set of 10 randomly generated palettes. This filter works by just selecting palettes predicted to be rated 3 by the user as recommendations. The recommendation generator first tries with 10 sets of 10 random palettes to find a 3, if that is not possible it chooses a palette with a predicted rating of 2 in the last set. The generated recommendation is then showed to the user that can rate it. 
 
@@ -80,19 +80,14 @@ A good way to measure the performance of the recommendation engine is to see if 
 ![figure ](Models/plots/palette_recommender_printout.png)
 <sub>Printout from palette_recommender.py running user lovisa and model net72acc.h5. First row shows the predicted rating of the first 10 randomly generated palettes. Session average is the average from the current active run of the program. Previous session average is calculated from the previous runs. Average random training rating is calculated from runs with the random palette generator program palette_gen.py.<sub>
 
-# Reinforcement learning
+# Recommender Engine with Reinforcement Learning
 
-Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
+The models can also used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the model, is presented to the user. The network is trained every 10th rated palette. The users answers are saved and can be used for further training of the network.
 
-The NN is used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the NN, is presented to the user. 
-
-The users answers are saved and used for further training of the network.
-
-Below is an image of a graph visualizing ... 
-The red line represents the expected value of a uniform distrubtion of the values 1, 2 and 3. Anything above this line indicates that the recommendations are better than the statistical average and vice versa if below.
+Below is an image of a graph visualizing the reinforced training process of an untrained model. The red line represents the expected value of a uniform distribution of the values 1, 2 and 3. Anything above this line indicates that the recommendations are better than the statistical average and vice versa if below. A positive trend can be seen at the peeks of the graph while the valleys does not have any clear trend. This is due to the biased training of the network where a increased performance means that it will only learn higher and higher rated palettes only occasionally does some low rated palettes appear. This indicates that the model will learn high rated palettes quicker than the palettes with low ratings. 
 
 ![](Models/plots/bm_reinforcement_training.png)
-<sub>Test performed on user bm, training model L_zero.h5<sub>
+<sub>Test of reinforced_palette_recommender.py performed on user bm, training model L_zero.h5. Here the average of every 10 palette ratings are plotted to see if the average increases with the training of the network that happens every 10 rated palette. The red line indicates the expected value of the rating system.<sub>
 
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
@@ -142,8 +137,6 @@ Lets user choose a network and rate recommendations given by the network. Avrage
 
 ## reinforcement_palette_recommender.py
 Start with a untrained netwrok or a model of choice and iteratively train model by giving it feedback on presented recommendations.
-
-# Test data structure / training data
 
 # References
 1. Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9781617294433  
