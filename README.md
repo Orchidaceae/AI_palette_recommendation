@@ -7,11 +7,13 @@ The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 
 ## Classification Problem
 Recommender systems are one of machine learning techniques that make prediction based on user’s historical behaviors. The most popular approaches to build such system are Content-based and Collaborative Filtering.
 Content-Based Filtering requires that there is a good amount of information of item’s own features which is based on the user’s previous ratings on data.  Collaborative filtering on the other hand uses techniques that can filter out items that a user might like based on the user reaction by similar users.
-Content-based filtering
-This type of filtering does not involve other users and is based only on one user interaction with the system, the algorithm will simply pick items with similar content to recommend to the user. It turned out that content-based filtering is most applicable to our AI palette recommendation engine.
+Content-based filtering [1]
+This type of filtering does not involve other users and is based only on one user interaction with the system, the algorithm will simply pick items with similar content to recommend to the user [2]. It turned out that content-based filtering is most applicable to our AI palette recommendation engine.
 Multi-class classification
-In machine learning classifying samples into one of three or more classes is called Multi-class classification. This classification method uses predictive modeling and assign each sample with one of more than two classes, which is implemented by predicting  the probability of the example belonging to each known class.
-
+In machine learning classifying samples into one of three or more classes is called Multi-class classification. This classification method uses predictive modeling and assign each sample with one of more than two classes, which is implemented by predicting  the probability of the example belonging to each known class [3].
+[1] https://towardsdatascience.com/intro-to-recommender-system-collaborative-filtering-64a238194a26
+[2] https://towardsdatascience.com/how-to-build-from-scratch-a-content-based-movie-recommender-with-natural-language-processing-25ad400eb243
+[3] https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
 # Work process
 
 ## Data Collection
@@ -81,9 +83,13 @@ The batch size did not notably affect the performance since this network is rath
 
 ### maryam_ANN
 After training the network based on statistics from validation data, tried some different technique to find a satisfying balance optimizing the model without overfitting. I added an extra hidden layer and set number of nodes to 54 with a drop-out layer after the second hidden layer, decided to have only one drop-out layer as the model achieved higher accuracy with one drop-out layer.
-To calculate the error the model uses a combination of Stochastic gradient descent optimizer algorithm and Mini-batch gradient descent. The model has a learning rate of 0.01 which controls how quickly the model is adapted to the problem. I chose training epoch 200 as smaller learning rates require more epoch because the changes made to the weights are smaller at each update. The model has a batch size of 32 
-
-![Figure ](/Models/plots/mmodel76acc_training_plot.png)
+To calculate the error the model uses a combination of Stochastic gradient descent optimizer algorithm and Mini-batch gradient descent. The model has a learning rate of 0.01 which controls how quickly the model is adapted to the problem. I chose training epoch 200 as smaller learning rates require more epoch because the changes made to the weights are smaller at each update. 
+Below are two graphs of two generated networks with maryam.csv. The mmodel68acc_training_plot graph on loss and accuracy shows the network with two hidden layer and 45 in number of nodes and 150 for epochs. The other graph mmodel76acc_validation_plot is set with 3 hidden layer, 54 in number of nodes and 200 epochs.
+The models show two line plots, the top one squared hinge loss over epochs for the train (blue) and test (orange) dataset, and the bottom plot showing classification accuracy over epochs. After adding additional layers and nodes to the network we can see from mmodel76acc_validation_plot that in both train and test the number of loss is minimized and hence the accuracy is also improved when the loss is decreased.
+![Figure ](/Models/plots/mmodel68acc_training_plot.png)
+<sub>Line plots of squared hinge loss and classification accuracy of the network with 68% i accuracy 
+![Figure ](/Models/plots/mmodel76acc_validation_plot.png)
+<sub>Line plots of squared hinge loss and classification accuracy of the network with 76% i accuracy 
 # Palette Recommendation Engine
 
 With a working palette rating predicting network we built a recommendation engine that could generate new palettes with high ratings. To generate recommendations you need to explore the palette space in some way. It is also good if this exploration does not get stuck on repeat in a select space of for example just one user color preferens. Preferably a random element should be included in the exploration to keep finding new interesting palettes. Therefore we used the network as just a filter on a set of 10 randomly generated palettes. This filter works by just selecting palettes predicted to be rated 3 by the user as recommendations. The recommendation generator first tries with 10 sets of 10 random palettes to find a 3, if that is not possible it chooses a palette with a predicted rating of 2 in the last set. The generated recommendation is then showed to the user that can rate it. 
@@ -95,13 +101,14 @@ A good way to measure the performance of the recommendation engine is to see if 
 
 # Recommender Engine with Reinforcement Learning
 
-The models can also used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the model, is presented to the user. The network is trained every 10th rated palette. The users answers are saved and can be used for further training of the network.
+The models can also be used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the model, is presented to the user. The network is trained every 10th rated palette. The users answers are saved and can be used for further training of the network.
 
 Below is an image of a graph visualizing the reinforced training process of an untrained model. The red line represents the expected value of a uniform distribution of the values 1, 2 and 3. Anything above this line indicates that the recommendations are better than the statistical average and vice versa if below. A positive trend can be seen at the peeks of the graph while the valleys does not have any clear trend. This is due to the biased training of the network where a increased performance means that it will only learn higher and higher rated palettes only occasionally does some low rated palettes appear. This indicates that the model will learn high rated palettes quicker than the palettes with low ratings. 
 
 ![](Models/plots/bm_reinforcement_training.png)
 <sub>Test of reinforced_palette_recommender.py performed on user bm, training model L_zero.h5. Here the average of every 10 palette ratings are plotted to see if the average increases with the training of the network that happens every 10 rated palette. The red line indicates the expected value of the rating system.<sub>
-
+![](Models/plots/m_reinforce.png)
+<sub>Test of reinforced_palette_recommender.py performed on m_zero.h5 model, the average of 10 palette rating is plotted to see if the average is increasing and it shows that the recommendation are better than the statistical average.
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
 
