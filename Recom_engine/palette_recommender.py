@@ -141,7 +141,7 @@ def get_users():
     user_f.close()
     return user_list
 
-# get avrage rating from training data and previous recommendation data
+# get average rating from training data and previous recommendation data
 def collect_statistics():
     global csv_file
     recom_path = './data/' + csv_file
@@ -158,12 +158,12 @@ def collect_statistics():
                 sum = sum + rate
                 n = n + 1
     if n != 0:
-        recom_avrage_rating = sum/n
+        recom_average_rating = sum/n
     else:
         print("no previous sessions found")
-        recom_avrage_rating = 0
+        recom_average_rating = 0
     
-    training_avrage_rating = 0    
+    training_average_rating = 0    
     try:
         with open(training_data_path, "rt") as f:
             reader = csv.reader(f, delimiter=",")
@@ -177,22 +177,22 @@ def collect_statistics():
                     sum = sum + rate
                     n = n + 1
         if n != 0:
-            training_avrage_rating = sum/n
+            training_average_rating = sum/n
     except IOError:
         print("Training data not found")      
-    return (recom_avrage_rating, training_avrage_rating)
+    return (recom_average_rating, training_average_rating)
 
 def display_statistics():
-    global recom_avrage_prev
+    global recom_average_prev
     global train_avarage
     global session_rateing_sum
     global palette_session_counter
 
-    session_avrage = session_rateing_sum/palette_session_counter
+    session_average = session_rateing_sum/palette_session_counter
     print("session: ", palette_session_counter)
-    print("session avrage rating: ", session_avrage)
-    print("Avrage rating from previous sessions: ", recom_avrage_prev)
-    print("Avrage rating from random training: ", train_avarage)
+    print("session average rating: ", session_average)
+    print("Average rating from previous sessions: ", recom_average_prev)
+    print("Average rating from random training: ", train_avarage)
     print("\n")
     print("current palette:")
     print(current_palette)
@@ -247,7 +247,7 @@ while (user_id in user_list) != True:
 csv_file = str(user_id) + ".csv"
 
 tmp = collect_statistics()
-recom_avrage_prev = tmp[0]
+recom_average_prev = tmp[0]
 train_avarage = tmp[1]
 
 def get_models(path):
