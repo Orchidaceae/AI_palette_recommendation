@@ -1,16 +1,18 @@
 # AI-driven Palette Recommendation
-Recommendation system for 3 color palettes
+Recommendation system for 3 color palettes written in python. It uses supervised learning in order to predict user rating of palettes, classifying palettes into 3 score classes: 1 2 3 where 1=dislike, 2=neither dislike nor like, 3=like. This classification model is utilized in a recommendation engine that gives palette recommendations based of the learned user preferences.
 
-Uses supervised learning in order to predict user rating of palettes, classifying palettes into 3 score classes: 1 2 3 where 1=dislike, 2=neither dislike nor like, 3=like.
+# Problem Description
+The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes too choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
 
-## Classification problem
-Multi-Class Classification, one sample belongs to just one of many classes. 
+## Classification Problem
+Multi-Class Classification, one sample belongs to just one of many classes. Content based filtering 
+
 # Work process
 
-## Data collection
+## Data Collection
 Since the recommendation engine is supposed to personalize palette recommendations for specific users, data has to be collected and stored for better predictions. We came up with a system that shows the user a randomly generated 3 color palette and asks the user to rate it from 1 to 3 in order to collect preferens data. The 3 byte hexadecimal color codes and the rating number are then written to a csv-file for the later training of the neural network. 
 
-## Data preprocessing
+## Data Preprocessing
 
 ### Try #1 - 3 dim palette space
 We first tested setting up a model for a 3 dimentional palette space where the axis were each one integer color of the palette. The model learned poorly since the data became to separate which made it hard to measure distance between datapoints and made the classification impossible on a small data set. This could be due to the colors being a mix of the color channels red/green/blue and representing them as decimal integers would for example make two blueish colors with a bit separate red values very distant on a color axis since the most sigificant byte is the red byte of the 3 byte hex colors. This systematic separation could be learned by a network but would proboably require more data than we had access to, therefore we decided to try modelling our sample data in a different way.
@@ -20,7 +22,7 @@ A better way to model the sampla data was to provide additional information abou
 
 The data from the csv file was vectorized as a 2d tensor consisting of 10 dimensional vectors containg the rgb color palette and their respective rating. 
 
-## Modelling and training the network
+## Modelling and Training the Network
 
 For the intelligence core in our system we decided to use Keras with a tensorflow backend. Keras is one of the most popular python packages for deeplearning as it is simple to learn and can be addapted to many types of machine leraning problems.
 
@@ -52,7 +54,7 @@ Categorical cross-entropy is used as loss function for the model as cross-entrop
 
 [3] https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
 
-## Validation and testing
+## Validation and Testing
 
 The goal at this stage was to get the prediction accuracy of our network models above the random baseline of simply guessing the class of a sample correctly which in our case is 33 percent. 
 
@@ -129,14 +131,45 @@ The training of the neural network is performed on the CPU and not the GPU due t
 ## palette_gen.py
 User rates randomly generated palettes in order to collect data to train network models. No palette recommendations are used here.
 
-## NN_test.py
-Generate new network with user data.
+Example of a test run:
+```bash
+> python3 palette_gen.py 
+Current user profiles: ['lovisa', 'maryam', 'test']
+Please enter user_id: test
+current palette:
+['#32dc99', '#342b8f', '#b0ca0f']
+input: 2
+Written 
+
+session:  1
+current palette:
+['#6bb789', '#ca535d', '#3ff9f1']
+input: 3
+Written 
+
+session:  2
+current palette:
+['#a5124c', '#0f44b8', '#ff770f']
+```
+
+# Models/
+- L_zero.h5
+    - Untrained network generated from Lovisa_NN.py
+- net72acc.h5
+    - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 72%.
+- net76acc.h5
+    - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 76%.
 
 ## palette_recommender.py
 Lets user choose a network and rate recommendations given by the network. Avrages of current user session rating as well as previous session ratings of the same user are given to compare them to the avrage rating on random training data (if it exsists for the specific user). No reinforcement with the user feedback is used in this version to further train the network.
 
+Example of a test run:
+
+
 ## reinforcement_palette_recommender.py
 Start with a untrained netwrok or a model of choice and iteratively train model by giving it feedback on presented recommendations.
+
+Example of a test run:
 
 # References
 1. Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9781617294433  
