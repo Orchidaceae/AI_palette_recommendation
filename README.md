@@ -18,6 +18,9 @@ In machine learning classifying samples into one of three or more classes is cal
 ## Data Collection
 Since the recommendation engine is supposed to personalize palette recommendations for specific users, data has to be collected and stored for better predictions. We came up with a system that shows the user a randomly generated 3 color palette and asks the user to rate it from 1 to 3 in order to collect preferens data. The 3 byte hexadecimal color codes and the rating number are then written to a csv-file for the later training of the neural network. 
 
+![figure 1](Models/plots/palette_window.png)
+<sub>User interface showing a palette. Input bar for rating at the bottom of the window.<sub>
+
 ## Data Preprocessing
 
 ### Try #1 - 3 dim palette space
