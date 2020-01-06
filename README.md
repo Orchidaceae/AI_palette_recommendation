@@ -2,7 +2,7 @@
 Recommendation system for 3 color palettes written in python. It uses supervised learning in order to predict user rating of palettes, classifying palettes into 3 score classes: 1 2 3 where 1=dislike, 2=neither dislike nor like, 3=like. This classification model is utilized in a recommendation engine that gives palette recommendations based of the learned user preferences.
 
 # Problem Description
-The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes too choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
+The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes to choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
 
 ## Classification Problem
 Multi-Class Classification, one sample belongs to just one of many classes. Content based filtering 
@@ -35,9 +35,9 @@ For the activation function of the three first layers I used a linear rectifier 
 
 For the training of the network the loss function categorical cross entropy was used as it is commonly used for multi-class classification [3]. As the optimizer function of the network training I used Adam which is a first-order gradient-based optimization of stochatic objective functions [4].  
 
-[1] http://proceedings.mlr.press/v15/glorot11a/glorot11a.pdf
+[1] X. Glorot, A. Bordes, and Y. Bengio. “Deep sparse rectifier neural net-works”. In: vol. 15. 2011, pp. 315–323.
 
-[2] https://medium.com/data-science-bootcamp/understand-the-softmax-function-in-minutes-f3a59641e86d
+[2] Uniqtech, Data Science Bootcamp. "Understand the Softmax Function in Minutes". 2018. url: https://medium.com/data-science-bootcamp/understand-the-softmax-function-in-minutes-f3a59641e86d. (visited on 01/05/2020).
 
 [3] https://gombru.github.io/2018/05/23/cross_entropy_loss/
 
@@ -152,7 +152,8 @@ current palette:
 ['#a5124c', '#0f44b8', '#ff770f']
 ```
 
-# Models/
+## Models/
+Description of saved models that can be ustilized in palette_recommender.py or reinforcement_palette_recommender.py.
 - L_zero.h5
     - Untrained network generated from Lovisa_NN.py
 - net72acc.h5
@@ -167,7 +168,7 @@ Example of a test run:
 
 
 ## reinforcement_palette_recommender.py
-Start with a untrained netwrok or a model of choice and iteratively train model by giving it feedback on presented recommendations.
+Start with a untrained network or a model of choice and iteratively train model by giving it feedback on presented recommendations.
 
 Example of a test run:
 
