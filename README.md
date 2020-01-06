@@ -57,23 +57,33 @@ Categorical cross-entropy is used as loss function for the model as cross-entrop
 The goal at this stage was to get the prediction accuracy of our network models above the random baseline of simply guessing the class of a sample correctly which in our case is 33 percent. 
 
 ### Lovisa_NN
-try some optimizations of the network using the statistics from the validation data 
+To properly optimize the network without introducing to much bias towards the particular data at hand the data were shuffled and dividet into 3 sets, one each for training, test and validation. Around 80 percent for training and 10 percent each for testing and validation. With this done network parameters such as training batch-size, epochs were altered to see how this affected the accuracy. The network performed generally well with the initial settings with an accuracy of about 50 percent.
 
-find a good balance with optimizing the model to the training data with a good ability to generalize, avoid overfitting with regularization techniques such as adding drop-out to layers, 50% dropout was used in two layers
-
-decide good values for number of layers and their size 
-
-Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
+The batch size did not notably affect the performance since this network is rather small in size. But what could be seen in the initial training was that the network overfitted rather quickly, that means that the model learned the distinct relations in the data too fast to learn the more subtle relations that would help it to generalize better. To avoid this I introduced dropout between the hidden layers in the model. This means that some percentage of the connection between of these layers are randomly reseted, introducing some random noise into the learning process. This regularization technique reduces the overfitting potential of the network [5]. After some testing the dropout were set to 50 percent. Down below are the graphs of two generated networks with the lovisa.csv data. From the loss graphs we can se that the first achieves a better training loss than test, this is expected since test is new unseen data for the model. But sometimes some networks such as the other below achieves a better loss for the test data than the training just by chance and this does not necessarily mean that they are better at generalizing without further testing.
+[5] Deep Learning with Python
 
 ![figure 1](Models/plots/net72acc.png)
-Statistics from training and testing 
+<sub>Statistics of a network with 72% validation accuracy. Comparing training and test loss and accuracy over the number of epochs. <sub>
 
 ![figure 2](Models/plots/net76acc.png) 
+<sub>Statistics of a network with 76% validation accuracy. Comparing training and test loss and accuracy over the number of epochs.<sub>
 
 ### maryam_ANN
 [How did you test and validate the models performence, describe the process.]
 
-# Reinforcement learning model
+# Palette recommendation engine
+
+With a working palette rating predicting network we built a recommendation engine that could generate new palettes with high ratings. To generate recommendations you need to explore the palette space in some way. It is also good if this exploration does not get stuck on repeat in a select space of for example just one user color preferens. Preferably a random element should be included in the exploration to keep finding new interesting palettes. Therefore we used the network as just a filter on a set of 10 randomly generated palettes. This filter works by just selecting palettes predicted to be rated 3 by the user as recommendations. The recommendation generator first tries with 10 sets of 10 random palettes to find a 3, if that is not possible it chooses a palette with a predicted rating of 2 in the last set. The generated recommendation is then showed to the user that can rate it. 
+
+A good way to measure the performance of the recommendation engine is to see if the average rating of the user is better compared to the average rating on randomly generated palettes. The figure below shows the results from a session run of palette_recommender.py. Here we can see that the average from previous sessions with the recommendation engine (data set of 90 palettes) are higher than the average rating of randomly generated palettes from palette_gen.py (data set of 900 palettes).
+
+![figure ](Models/plots/palette_recommender_printout.png)
+<sub>Printout from palette_recommender.py running user lovisa and model net72acc.h5. First row shows the predicted rating of the first 10 randomly generated palettes. Session average is the average from the current active run of the program. Previous session average is calculated from the previous runs. Average random training rating is calculated from runs with the random palette generator program palette_gen.py.<sub>
+
+# Reinforcement learning
+
+Goal for the recommenation engine - achieve a higher avarage of rating with recommended palettes than randomly generated palettes
+
 The NN is used in a feedback loop that uses multiple predictions to explore the palette space. The exploration is done by uniformly generate randomized palettes and then filtering out the best prediction among them and present that palette to the user. That way there is a stream of new palettes generated and the best, according to the NN, is presented to the user. 
 
 The users answers are saved and used for further training of the network.
@@ -82,7 +92,8 @@ Below is an image of a graph visualizing ...
 The red line represents the expected value of a uniform distrubtion of the values 1, 2 and 3. Anything above this line indicates that the recommendations are better than the statistical average and vice versa if below.
 
 ![](Models/plots/bm_reinforcement_training.png)
-Test performed on user bm, training model L_zero.h5
+<sub>Test performed on user bm, training model L_zero.h5<sub>
+
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
 
