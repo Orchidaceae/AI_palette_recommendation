@@ -5,11 +5,11 @@ Recommendation system for 3 color palettes written in python. It uses supervised
 The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes to choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
 
 ## Classification Problem
-Recommender systems are one of machine learning techniques that make prediction based on user’s historical behaviors. The most popular approaches to build such system are Content-based and Collaborative Filtering.
-Content-Based Filtering requires that there is a good amount of information of item’s own features which is based on the user’s previous ratings on data.  Collaborative filtering on the other hand uses techniques that can filter out items that a user might like based on the user reaction by similar users.
-Content-based filtering [1]
+Recommender systems are one machine learning technique that make prediction based on user’s historical behaviors. The most popular approaches to build such system are Content-based and Collaborative Filtering.
+Content-Based Filtering requires that there is a good amount of information of item’s own features which is based on the user’s previous ratings on data.  Collaborative filtering on the other hand uses techniques that can filter out items that a user might like based on the user reaction by similar users [1].
+### Content-based filtering 
 This type of filtering does not involve other users and is based only on one user interaction with the system, the algorithm will simply pick items with similar content to recommend to the user [2]. It turned out that content-based filtering is most applicable to our AI palette recommendation engine.
-Multi-class classification
+### Multi-class classification
 In machine learning classifying samples into one of three or more classes is called Multi-class classification. This classification method uses predictive modeling and assign each sample with one of more than two classes, which is implemented by predicting  the probability of the example belonging to each known class [3].
 [1] https://towardsdatascience.com/intro-to-recommender-system-collaborative-filtering-64a238194a26
 [2] https://towardsdatascience.com/how-to-build-from-scratch-a-content-based-movie-recommender-with-natural-language-processing-25ad400eb243
@@ -87,9 +87,9 @@ To calculate the error the model uses a combination of Stochastic gradient desce
 Below are two graphs of two generated networks with maryam.csv. The mmodel68acc_training_plot graph on loss and accuracy shows the network with two hidden layer and 45 in number of nodes and 150 for epochs. The other graph mmodel76acc_validation_plot is set with 3 hidden layer, 54 in number of nodes and 200 epochs.
 The models show two line plots, the top one squared hinge loss over epochs for the train (blue) and test (orange) dataset, and the bottom plot showing classification accuracy over epochs. After adding additional layers and nodes to the network we can see from mmodel76acc_validation_plot that in both train and test the number of loss is minimized and hence the accuracy is also improved when the loss is decreased.
 ![Figure ](/Models/plots/mmodel68acc_training_plot.png)
-<sub>Line plots of squared hinge loss and classification accuracy of the network with 68% i accuracy 
+<sub>Line plots of squared hinge loss and classification accuracy of the network with 68% i accuracy</sub> 
 ![Figure ](/Models/plots/mmodel76acc_validation_plot.png)
-<sub>Line plots of squared hinge loss and classification accuracy of the network with 76% i accuracy 
+<sub>Line plots of squared hinge loss and classification accuracy of the network with 76% i accuracy</sub> 
 # Palette Recommendation Engine
 
 With a working palette rating predicting network we built a recommendation engine that could generate new palettes with high ratings. To generate recommendations you need to explore the palette space in some way. It is also good if this exploration does not get stuck on repeat in a select space of for example just one user color preferens. Preferably a random element should be included in the exploration to keep finding new interesting palettes. Therefore we used the network as just a filter on a set of 10 randomly generated palettes. This filter works by just selecting palettes predicted to be rated 3 by the user as recommendations. The recommendation generator first tries with 10 sets of 10 random palettes to find a 3, if that is not possible it chooses a palette with a predicted rating of 2 in the last set. The generated recommendation is then showed to the user that can rate it. 
@@ -108,7 +108,7 @@ Below is an image of a graph visualizing the reinforced training process of an u
 ![](Models/plots/bm_reinforcement_training.png)
 <sub>Test of reinforced_palette_recommender.py performed on user bm, training model L_zero.h5. Here the average of every 10 palette ratings are plotted to see if the average increases with the training of the network that happens every 10 rated palette. The red line indicates the expected value of the rating system.<sub>
 ![](Models/plots/m_reinforce.png)
-<sub>Test of reinforced_palette_recommender.py performed on m_zero.h5 model, the average of 10 palette rating is plotted to see if the average is increasing and it shows that the recommendation are better than the statistical average.
+<sub>Test of reinforced_palette_recommender.py performed on m_zero.h5 model, the average of 10 palette rating is plotted to see if the average is increasing and it shows that the recommendation are better than the statistical average.</sub>
 # Building
 The dependencies are pretty standard as far as machine learning goes and should not be any problems to setup. The recommended way is to install everything via pip as far as possible. 
 
@@ -178,19 +178,23 @@ Description of saved models that can be ustilized in palette_recommender.py or r
     - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 72%.
 - net76acc.h5
     - Network generated from Lovisa_NN.py, trained, tested and validated with Data_mining/lovisa.csv. Validation accuracy of 76%.
+[TODO: add more models]
 
 ## palette_recommender.py
 Lets user choose a network and rate recommendations given by the network. Avrages of current user session rating as well as previous session ratings of the same user are given to compare them to the avrage rating on random training data (if it exsists for the specific user). No reinforcement with the user feedback is used in this version to further train the network.
 
 Example of a test run:
-
+[TODO: add example]
 
 ## reinforcement_palette_recommender.py
 Start with a untrained network or a model of choice and iteratively train model by giving it feedback on presented recommendations.
 
 Example of a test run:
+[TODO: add example]
 
 # References
 1. Chollet Francois. Deep Learning with Python. Manning Publications, 2017. ISBN: 9781617294433  
-2. TODO
-3. TODO
+2. [TODO]
+3. [TODO]
+
+[TODO: make sure that test files are empty]
