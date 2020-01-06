@@ -137,7 +137,10 @@ def get_users():
     with open(path, "rt") as user_f:
         reader = csv.reader(user_f, delimiter=";")
         for row in reader:
-            user_list.append(row[0])
+            if not row:
+                continue
+            else:
+                user_list.append(row[0])
     user_f.close()
     return user_list
 

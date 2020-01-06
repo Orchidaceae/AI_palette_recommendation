@@ -142,7 +142,10 @@ def get_users():
     with open(path, "rt") as user_f:
         reader = csv.reader(user_f, delimiter=";")
         for row in reader:
-            user_list.append(row[0])
+            if not row:
+                continue
+            else:
+                user_list.append(row[0])
     user_f.close()
     return user_list
 
@@ -210,7 +213,14 @@ def train_model(n):
     recom_path = './data/' + csv_file
     with open(recom_path, "rt") as f:
         reader = csv.reader(f, delimiter=",")
-        data = list(reader)
+        data = []
+        for row in reader:
+                if not row:
+                    continue
+                else:
+                    data.append(row)
+
+        #data = list(reader)
         row_count = len(data)
         cut_index = row_count-n
 
