@@ -5,7 +5,12 @@ Recommendation system for 3 color palettes written in python. It uses supervised
 The hexadecimal 3 byte web color encoding can represent 16<sup>6</sup> ≈ 16.8 million different colors. With a combination of 3 colors there are (16.8x10<sup>6</sup>)<sup>3</sup> ≈ 4.7 billion possible palettes to choose from. This is definitely too much for a person to go through. One possible solution of the problem of finding good matches for a persons preferences of color combination is to let a recommendation system do the bidding.
 
 ## Classification Problem
-Multi-Class Classification, one sample belongs to just one of many classes. Content based filtering 
+Recommender systems are one of machine learning techniques that make prediction based on user’s historical behaviors. The most popular approaches to build such system are Content-based and Collaborative Filtering.
+Content-Based Filtering requires that there is a good amount of information of item’s own features which is based on the user’s previous ratings on data.  Collaborative filtering on the other hand uses techniques that can filter out items that a user might like based on the user reaction by similar users.
+Content-based filtering
+This type of filtering does not involve other users and is based only on one user interaction with the system, the algorithm will simply pick items with similar content to recommend to the user. It turned out that content-based filtering is most applicable to our AI palette recommendation engine.
+Multi-class classification
+In machine learning classifying samples into one of three or more classes is called Multi-class classification. This classification method uses predictive modeling and assign each sample with one of more than two classes, which is implemented by predicting  the probability of the example belonging to each known class.
 
 # Work process
 
@@ -48,6 +53,9 @@ In this network the input data is split to train and test set using train_test_s
 
 Categorical cross-entropy is used as loss function for the model as cross-entropy function calculate a score which is the difference between the actucal and predicted probability distributions for all classes and tries to minimize this score to zero as close as possible [3]. I decided to use stochastic gradient descent with a learning rate of 0.01 as the optimizer function [3].
 
+
+
+
 [1] Sunny Srinidhi. "How to split your dataset to train and test datasets using SciKit Learn". 2018. url: https://medium.com/@contactsunny/how-to-split-your-dataset-to-train-and-test-datasets-using-scikit-learn-e7cf6eb5e0d. (visited on 01/03/2020).
 
 [2] deep learning with python
@@ -72,8 +80,10 @@ The batch size did not notably affect the performance since this network is rath
 <sub>Statistics of a network with 76% validation accuracy. Comparing training and test loss and accuracy over the number of epochs.<sub>
 
 ### maryam_ANN
-[How did you test and validate the models performence, describe the process.]
+After training the network based on statistics from validation data, tried some different technique to find a satisfying balance optimizing the model without overfitting. I added an extra hidden layer and set number of nodes to 54 with a drop-out layer after the second hidden layer, decided to have only one drop-out layer as the model achieved higher accuracy with one drop-out layer.
+To calculate the error the model uses a combination of Stochastic gradient descent optimizer algorithm and Mini-batch gradient descent. The model has a learning rate of 0.01 which controls how quickly the model is adapted to the problem. I chose training epoch 200 as smaller learning rates require more epoch because the changes made to the weights are smaller at each update. The model has a batch size of 32 
 
+![Figure ](/Models/plots/mmodel76acc_training_plot.png)
 # Palette Recommendation Engine
 
 With a working palette rating predicting network we built a recommendation engine that could generate new palettes with high ratings. To generate recommendations you need to explore the palette space in some way. It is also good if this exploration does not get stuck on repeat in a select space of for example just one user color preferens. Preferably a random element should be included in the exploration to keep finding new interesting palettes. Therefore we used the network as just a filter on a set of 10 randomly generated palettes. This filter works by just selecting palettes predicted to be rated 3 by the user as recommendations. The recommendation generator first tries with 10 sets of 10 random palettes to find a 3, if that is not possible it chooses a palette with a predicted rating of 2 in the last set. The generated recommendation is then showed to the user that can rate it. 
