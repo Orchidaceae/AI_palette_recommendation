@@ -39,20 +39,20 @@ For the training of the network the loss function categorical cross entropy was 
 
 [2] Uniqtech, Data Science Bootcamp. "Understand the Softmax Function in Minutes". 2018. url: https://medium.com/data-science-bootcamp/understand-the-softmax-function-in-minutes-f3a59641e86d. (visited on 01/05/2020).
 
-[3] https://gombru.github.io/2018/05/23/cross_entropy_loss/
+[3] Raúl Gómez. "Understanding Categorical Cross-Entropy Loss, Binary Cross-Entropy Loss, Softmax Loss, Logistic Loss, Focal Loss and all those confusing names". 2018. url: https://gombru.github.io/2018/05/23/cross_entropy_loss/. (visited on 01/05/2020).
 
-[4] https://arxiv.org/abs/1412.6980v8
+[4] Diederik Kingma, Jimmy Ba. Adam: "A Method for Stochastic Optimization". 2014. url: https://arxiv.org/abs/1412.6980v8. (visited on 01/05/2020).
 
 ### maryam_ANN
 In this network the input data is split to train and test set using train_test_split function from scikit-learn [1], test size is then set up to 0.2 which is 20% of the whole input sample. one hot encoding is used on the label data to convert the labels which are integers 1,2,3 to binary classes to help the model algorithm do a better prediction. Because of the non-linear feature of the data classification there should at least be one hidden layer I decided to have 3 hidden layers with 54 nodes in each layers with rectified linear activation function [2] and because of the nature of the color channel input the first layer should have 9 nodes. Output layer consists of 3 nodes one for each rating class and in this layer softmax activitaion function is used [2].
 
 Categorical cross-entropy is used as loss function for the model as cross-entropy function calculate a score which is the difference between the actucal and predicted probability distributions for all classes and tries to minimize this score to zero as close as possible [3]. I decided to use stochastic gradient descent with a learning rate of 0.01 as the optimizer function [3].
 
-[1] https://medium.com/@contactsunny/how-to-split-your-dataset-to-train-and-test-datasets-using-scikit-learn-e7cf6eb5e0d 
+[1] Sunny Srinidhi. "How to split your dataset to train and test datasets using SciKit Learn". 2018. url: https://medium.com/@contactsunny/how-to-split-your-dataset-to-train-and-test-datasets-using-scikit-learn-e7cf6eb5e0d. (visited on 01/03/2020).
 
-[2] https://learning.oreilly.com/library/view/deep-learning-with/9781617294433/OEBPS/Text/03.xhtml
+[2] deep learning with python
 
-[3] https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
+[3] Jason Brownlee. "How to Choose Loss Functions When Training Deep Learning Neural Networks". 2019. url: https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/. (visited on 01/03/2020).
 
 ## Validation and Testing
 
@@ -62,6 +62,7 @@ The goal at this stage was to get the prediction accuracy of our network models 
 To properly optimize the network without introducing to much bias towards the particular data at hand the data were shuffled and dividet into 3 sets, one each for training, test and validation. Around 80 percent for training and 10 percent each for testing and validation. With this done network parameters such as training batch-size, epochs were altered to see how this affected the accuracy. The network performed generally well with the initial settings with an accuracy of about 50 percent.
 
 The batch size did not notably affect the performance since this network is rather small in size. But what could be seen in the initial training was that the network overfitted rather quickly, that means that the model learned the distinct relations in the data too fast to learn the more subtle relations that would help it to generalize better. To avoid this I introduced dropout between the hidden layers in the model. This means that some percentage of the connection between of these layers are randomly reseted, introducing some random noise into the learning process. This regularization technique reduces the overfitting potential of the network [5]. After some testing the dropout were set to 50 percent. Down below are the graphs of two generated networks with the lovisa.csv data. From the loss graphs we can se that the first achieves a better training loss than test, this is expected since test is new unseen data for the model. But sometimes some networks such as the other below achieves a better loss for the test data than the training just by chance and this does not necessarily mean that they are better at generalizing without further testing.
+
 [5] Deep Learning with Python
 
 ![figure 1](Models/plots/net72acc.png)
